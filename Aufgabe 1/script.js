@@ -33,9 +33,12 @@ document.getElementById("submit").addEventListener("click",function(){
    document.getElementById("text").value = "";
 });
 document.getElementById("clear").addEventListener("click",function(){
-  //let leng =Ergebnis.length;
-  let textresult =Ergebnis.substring(textresult.length - 1);
-  document.getElementById("Ergebnis").innerHTML = Ergebnis-textresult;
+  
+  let Ergebnis = document.getElementById("Ergebnis").innerHTML
+  let lastletter = Ergebnis.substring(0, Ergebnis.length-1);
+  document.getElementById("Ergebnis").innerHTML = lastletter;
 
 
 });
+
+
