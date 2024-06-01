@@ -37,8 +37,9 @@ document.getElementById("clear").addEventListener("click",function(){
   let Ergebnis = document.getElementById("Ergebnis").innerHTML
   let lastletter = Ergebnis.substring(0, Ergebnis.length-1);
   document.getElementById("Ergebnis").innerHTML = lastletter;
-
-
 });
+
+
+
 
 
