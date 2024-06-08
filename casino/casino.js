@@ -39,7 +39,7 @@ function gamble() {
                     document.getElementById("money").innerHTML = money;
                     document.getElementById("result").innerHTML = "You lose " + Einsatz + "€";
             }
-  
+                  
   
 }
 else {
