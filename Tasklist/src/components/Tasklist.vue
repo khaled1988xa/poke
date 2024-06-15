@@ -17,6 +17,9 @@ tasks.value[index].compleated=true
 
 <template>
   <div>Task Items</div>
+  <div v-for="(task, index) in tasks">
+    {{ task.title }}
+  </div>
   <TasklistItem v-for="(task,index) in tasks" :task="task" :index="index" @task-compleated="updateTask"></TasklistItem>
 </template>
 
