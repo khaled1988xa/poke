@@ -1,7 +1,7 @@
 <template>
     <div>
       <h1>Parent Component</h1>
-        <div></div>
+        
 
       <ChildComponent :items="items" @add-item="handleAddItem" />
     </div>
