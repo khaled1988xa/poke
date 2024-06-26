@@ -6,7 +6,7 @@
  <main>
     <h1>Hello World</h1>
  </main>
-</template>
+</template><q>	</q>
 
 <style scoped>
 

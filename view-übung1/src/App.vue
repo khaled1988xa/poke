@@ -1,11 +1,14 @@
 <script setup>
-import ParentComponent from 'view-übung1\src\components\ParentComponent.vue'
+import ParentComponent from './components/ParentComponent.vue';
+//import ChildComponent from './components/ChildComponent.vue';
+
 
 
 </script>
 
 <template>
  <ParentComponent/>
+ 
 </template>
 
 <style scoped>
