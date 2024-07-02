@@ -6,7 +6,7 @@ import RegistrationView from '@/views/auth/RegistrationView.vue'
 import HomeView from '@/views/HomeView.vue'
 import BasketView from '@/views/BasketView.vue'
 import ProductCreateView from '@/views/ProductCreateView.vue'
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore } from '@/stores/authStore'
 
 const routes = [
     {

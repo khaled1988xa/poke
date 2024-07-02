@@ -2,7 +2,7 @@ import App from './App.vue'
 import { createApp } from 'vue'
 import vuetify from '@/plugins/vuetify'
 import router from '@/router'
-import { loadFonts } from '@/plugins/webfontloader'
+
 import { createPinia } from 'pinia'
 import axios from 'axios'
 
@@ -20,7 +20,7 @@ axios.interceptors.request.use(request => {
     return request
 })
 
-loadFonts()
+//loadFonts()
 createApp(App)
     .use(vuetify)
     .use(createPinia())

@@ -12,7 +12,7 @@
 
 <script setup>
     import PageLoader from './components/PageLoader.vue'
-    import { useAuthStore } from '@/store/authStore'
+    import { useAuthStore } from '@/stores/authStore'
 
     const authStore = useAuthStore()
 </script>
