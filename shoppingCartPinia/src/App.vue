@@ -11,7 +11,7 @@ import ProductList from './components/ProductList.vue';
 
 
 
-</öscript>
+</script>
 
 <style scoped>
 
