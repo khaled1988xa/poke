@@ -5,6 +5,7 @@ import router from '@/router'
 import { loadFonts } from '@/plugins/webfontloader'
 import { createPinia } from 'pinia'
 import axios from 'axios'
+import bootstrap from '../node_modules/bootstrap/dist/css/bootstrap.css'
 
 /**
  * Interceptors sind Funktionen, die pro Request ausgeführt werden und dazu dienen, den jeweiligen Request zu manipulieren.

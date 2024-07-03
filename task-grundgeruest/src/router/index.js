@@ -7,6 +7,7 @@ import HomeView from '@/views/HomeView.vue'
 import BasketView from '@/views/BasketView.vue'
 import ProductCreateView from '@/views/ProductCreateView.vue'
 import { useAuthStore } from '@/store/authStore'
+import personalData from '@/views/personalData.vue'
 
 const routes = [
     {
@@ -16,6 +17,10 @@ const routes = [
             {
                 path: '',
                 component: HomeView
+            },
+            {
+                path: '/pesonalData',
+                component: personalData ,
             },
             {
                 path: 'basket',

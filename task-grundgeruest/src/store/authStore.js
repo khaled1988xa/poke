@@ -18,7 +18,9 @@ export const useAuthStore = defineStore('auth', {
         },
         // Überprüft, ob der eingeloggte Seitenbesucher ein Kunde ist
         isUser() {
-            return this.user?.role === 'user'
+           // return this.user?.role === 'user'
+            //return true
+            return !!this.user
         }
     },
     actions: {
@@ -53,7 +55,13 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials) {
             const {data} = await axios.post(API_URL + 'auth/login', credentials)
             this.applyAuthentication(data)
-        },
+        }, 
+        async updateuseronserver(user) {
+            const {data} = await axios.put(API_URL + 'user',user)
+            console.log(data)
+            this.user = data
+        }
+        ,
         async register(registration) {
             const {data} = await axios.post(API_URL + 'auth/register', registration)
             this.applyAuthentication(data)
@@ -65,6 +73,6 @@ export const useAuthStore = defineStore('auth', {
         applyAuthentication({user, accessToken}) {
             this.user = user
             localStorage.setItem('jwt', 'Bearer ' + accessToken) // Hier wird der JWT dauerhaft unter dem Namen "jwt" (erster Parameter) gespeichert.
-        }
+        },
     }
 })
