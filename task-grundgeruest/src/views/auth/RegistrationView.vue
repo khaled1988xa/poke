@@ -9,10 +9,13 @@
                           autocomplete="given-name" v-model="registration.firstName"/>
             <v-text-field label="Nachname" type="text" required variant="outlined" maxlength="255"
                           autocomplete="family-name" v-model="registration.lastName"/>
+            <v-text-field label="username" type="text" required variant="outlined" maxlength="255"
+                          autocomplete="username" v-model="registration.username"/>
             <v-text-field label="E-Mail-Adresse" type="email" required variant="outlined" maxlength="255"
                           autocomplete="email" v-model="registration.email"/>
             <v-text-field label="Passwort" type="password" required variant="outlined" maxlength="255" minlength="8"
                           autocomplete="new-password" class="mb-4" v-model="registration.password"/>
+            <v-checkbox label="Ich habe die Datenschutzbestimmungen gelesen und akzeptiert." v-model="registration.termsOfUseAccepted"/>
             <v-btn type="submit" color="primary" block class="mb-2">Registrieren</v-btn>
             <v-btn to="/login" variant="text" color="primary" block exact>Login</v-btn>
             <v-snackbar v-model="showUnknownError" location="bottom end">
@@ -36,8 +39,12 @@
         firstName: '',
         lastName: '',
         email: '',
-        password: ''
+        password: '',
+        username: '',
+        termsOfUseAccepted: true
+
     })
+   
 
     async function register () {
         try {
