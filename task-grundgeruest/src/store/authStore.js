@@ -141,4 +141,11 @@ export const useAuthStore = defineStore('auth', {
             this.user = user
             localStorage.setItem('jwt', 'Bearer ' + accessToken)// Hier wird der JWT dauerhaft unter dem Namen "jwt" (erster Parameter) gespeichert.
             console.log(this.userId)
-        }}});
+        },
+        async updatePassword(passwordobj) {
+          
+            
+             const {data} =axios.post(API_URL + 'user/password', passwordobj)
+             console.log(data)
+            this.user = data
+      }}});
