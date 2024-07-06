@@ -8,6 +8,8 @@ import BasketView from '@/views/BasketView.vue'
 import ProductCreateView from '@/views/ProductCreateView.vue'
 import { useAuthStore } from '@/store/authStore'
 import personalData from '@/views/personalData.vue'
+import UpdateProfilePhoto from '@/views/UpdateProfilePhoto.vue'
+import UpdateUserPassword from '@/views/UpdateUserPassword.vue'
 
 const routes = [
     {
@@ -19,8 +21,19 @@ const routes = [
                 component: HomeView
             },
             {
-                path: '/pesonalData',
-                component: personalData ,
+                path: '/personal-data',
+                name: 'PersonalData',
+                component: personalData
+            },
+            { 
+                 path: '/update-profile-photo',
+                 name: 'UpdateProfilePhoto',
+                 component: UpdateProfilePhoto 
+            },
+            {
+                path:'Update-User-Password',
+                name: 'UpdateUserPassword',
+                component: UpdateUserPassword
             },
             {
                 path: 'basket',

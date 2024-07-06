@@ -5,7 +5,8 @@ import { API_URL } from '@/api'
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         isInitialized: false, // dient dazu, um festzuhalten, ob initial nach dem Seitenreload die Benutzerdaten bereits geladen wurden
-        user: null
+        user: null,
+        userId: null,
     }),
     getters: {
         // Kann genutzt werden, um allgemein abzuprüfen, ob der Seitenbesucher eingeloggt ist
@@ -18,12 +19,13 @@ export const useAuthStore = defineStore('auth', {
         },
         // Überprüft, ob der eingeloggte Seitenbesucher ein Kunde ist
         isUser() {
-           // return this.user?.role === 'user'
+            return true         // return this.user?.role === 'user'
             //return true
-            return !!this.user
+            //return !!this.user
         }
     },
     actions: {
+        
         /**
          * Diese Funktion dient dazu, nach einem Seitenreload die Benutzerdaten einmal zu laden.
          * Wenn diese Funktion mehrfach aufgerufen wird, soll sie dennoch nur ein einziges Mal einen Request abschicken
@@ -44,6 +46,43 @@ export const useAuthStore = defineStore('auth', {
             await this.isInitialized
             this.isInitialized = true
         },
+        async uploadProfileImage(file) {
+            try {
+              const formData = new FormData();
+              formData.append('image', file);
+      
+              const token = localStorage.getItem('jwt');
+              const config = {
+                headers: {
+                  'Authorization': token,
+                  'accept': 'application/json'
+                }
+              };
+              console.log('Sending request to upload image');
+              const { data } = await axios.post(API_URL + 'user/image', formData, config);
+              console.log('Image upload response:', data);
+            } catch (error) {
+              console.error('Failed to upload image:', error);
+              throw error;
+            }
+          },
+          async deleteProfileImage() {
+            try {
+              const token = localStorage.getItem('jwt');
+              const config = {
+                headers: {
+                  'Authorization': token,
+                  'accept': 'application/json'
+                }
+              };
+              console.log('Sending request to delete image');
+              const { data } = await axios.delete(API_URL + 'user/image', config);
+              console.log('Image delete response:', data);
+            } catch (error) {
+              console.error('Failed to delete image:', error);
+              throw error;
+            }
+          },
         async loadUser() {
             // Es soll kein Request abgeschickt wird, wenn kein JWT gespeichert ist.
             if(!localStorage.getItem('jwt')) {
@@ -51,15 +90,42 @@ export const useAuthStore = defineStore('auth', {
             }
             const {data} = await axios.get(API_URL + 'auth')
             this.applyAuthentication(data)
+            console.log(data)
+           // this.UserId = data.user.userId
+           // console.log(this.UserId)
         },
         async login(credentials) {
             const {data} = await axios.post(API_URL + 'auth/login', credentials)
             this.applyAuthentication(data)
         }, 
+        
         async updateuseronserver(user) {
-            const {data} = await axios.put(API_URL + 'user',user)
+            try{
+                const token = localStorage.getItem('jwt');
+                
+                if (!token){
+                    console.log('no token')
+
+                }
+                else{
+                    console.log('token')
+                }
+                console.log(user)
+                const config ={
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization':  token
+                    }
+                }
+                const {data} = await axios.put(API_URL+'user/', user.value, config)
             console.log(data)
             this.user = data
+                
+            }
+            catch (error) {
+                console.error('Failed to update user:', error);}
+
+            
         }
         ,
         async register(registration) {
@@ -71,8 +137,8 @@ export const useAuthStore = defineStore('auth', {
             localStorage.removeItem('jwt') // Zum Logout reicht es, wenn das Frontend den JWT "vergisst"
         },
         applyAuthentication({user, accessToken}) {
+            this.userId = user.userId
             this.user = user
-            localStorage.setItem('jwt', 'Bearer ' + accessToken) // Hier wird der JWT dauerhaft unter dem Namen "jwt" (erster Parameter) gespeichert.
-        },
-    }
-})
+            localStorage.setItem('jwt', 'Bearer ' + accessToken)// Hier wird der JWT dauerhaft unter dem Namen "jwt" (erster Parameter) gespeichert.
+            console.log(this.userId)
+        }}});
