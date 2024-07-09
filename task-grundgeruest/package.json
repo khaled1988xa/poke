@@ -10,6 +10,7 @@
     "@mdi/font": "7.0.96",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "mdi": "^2.2.43",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.38",

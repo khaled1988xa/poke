@@ -1,64 +1,66 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/store/authStore'
+
+// Layouts
 import AuthenticationLayout from '@/layouts/AuthenticationLayout.vue'
 import ApplicationLayout from '@/layouts/ApplicationLayout.vue'
+
+// Views
+import WelcomeView from '@/views/WelcomeView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import RegistrationView from '@/views/auth/RegistrationView.vue'
 import HomeView from '@/views/HomeView.vue'
 import BasketView from '@/views/BasketView.vue'
 import ProductCreateView from '@/views/ProductCreateView.vue'
-import { useAuthStore } from '@/store/authStore'
-import personalData from '@/views/personalData.vue'
+import PersonalData from '@/views/personalData.vue'
 import UpdateProfilePhoto from '@/views/UpdateProfilePhoto.vue'
 import UpdateUserPassword from '@/views/UpdateUserPassword.vue'
+import AddnewTask from '@/views/AddnewTask.vue'
 
 const routes = [
     {
         path: '/',
+        component: WelcomeView,
+        meta: { requiresAuth: false }
+    },
+    {
+        path: '/app',
         component: ApplicationLayout,
+        meta: { requiresAuth: true },
         children: [
             {
                 path: '',
                 component: HomeView
             },
             {
-                path: '/personal-data',
+                path: 'personal-data',
                 name: 'PersonalData',
-                component: personalData
-            },
-            { 
-                 path: '/update-profile-photo',
-                 name: 'UpdateProfilePhoto',
-                 component: UpdateProfilePhoto 
+                component: PersonalData
             },
             {
-                path:'Update-User-Password',
+                path: 'update-profile-photo',
+                name: 'UpdateProfilePhoto',
+                component: UpdateProfilePhoto 
+            },
+            {
+                path: 'update-user-password',
                 name: 'UpdateUserPassword',
                 component: UpdateUserPassword
             },
-            {
-                path: 'basket',
-                component: BasketView,
-                /**
-                 * "beforeEnter" wird automatisch aufgerufen, wenn der Seitenbesucher auf, in diesem Fall, "/basket" geleitet wird.
-                 * https://router.vuejs.org/guide/advanced/navigation-guards.html#per-route-guard
-                 */
-                beforeEnter() {
-                    const authStore = useAuthStore()
-                    if(!authStore.isUser) {
-                        return '/' // Wenn der Benutzer nicht oder eingeloggt ist oder ein Admin ist, wird er auf die Startseite weitergeleitet
-                    }
-                    return true
-                }
+          {
+                path: '/AddnewTask',
+                name: 'AddnewTask',
+                component: AddnewTask
             },
             {
                 path: 'new-product',
                 component: ProductCreateView,
-                beforeEnter() {
+                beforeEnter: (to, from, next) => {
                     const authStore = useAuthStore()
-                    if(!authStore.isAdmin) {
-                        return '/' // Wenn der Benutzer nicht eingeloggt ist oder ein Kunde ist, wird er auf die Startseite weitergeleitet
+                    if (!authStore.isAdmin) {
+                        return next('/app')
                     }
-                    return true
+                    return next()
                 }
             }
         ]
@@ -70,12 +72,22 @@ const routes = [
             {
                 path: '',
                 component: LoginView
-            },
+            }
+        ]
+    },
+    {
+        path: '/register',
+        component: AuthenticationLayout,
+        children: [
             {
-                path: '/register',
+                path: '',
                 component: RegistrationView
             }
         ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/'
     }
 ]
 
@@ -84,12 +96,19 @@ const router = createRouter({
     routes,
 })
 
-/**
- * Diese Funktion wird beim initialen Seitenaufruf und bei jedem weiteren Seitenwechsel aufgerufen.
- * In diesem Fall werden einmal die Benutzerdaten geladen, damit die benutzerabhängigen Anzeigen (Button zum Warenkorb)
- * und späteren RouteGuards korrekt ausgeführt werden können.
- * https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
- */
-router.beforeEach(() => useAuthStore().initialize())
+router.beforeEach(async (to, from, next) => {
+    const authStore = useAuthStore()
+    await authStore.initialize()
+
+    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+        next('/login')
+    } else if ((to.path === '/login' || to.path === '/register') && authStore.isLoggedIn) {
+        next('/app')
+    } else if (to.path === '/' && authStore.isLoggedIn) {
+        next('/app')
+    } else {
+        next()
+    }
+})
 
 export default router

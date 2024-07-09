@@ -1,14 +1,18 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { API_URL } from '@/api'
+import router from '@/router';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         isInitialized: false, // dient dazu, um festzuhalten, ob initial nach dem Seitenreload die Benutzerdaten bereits geladen wurden
         user: null,
         userId: null,
+        localtasklists: [],
+        taskListId: null
+        
     }),
-    getters: {
+    getters: {  
         // Kann genutzt werden, um allgemein abzuprüfen, ob der Seitenbesucher eingeloggt ist
         isLoggedIn() {
             return !!this.user
@@ -58,15 +62,21 @@ export const useAuthStore = defineStore('auth', {
                   'accept': 'application/json'
                 }
               };
+              
+              this.deleteProfileImage()
               console.log('Sending request to upload image');
               const { data } = await axios.post(API_URL + 'user/image', formData, config);
+              if (data.image){
+                this.user.image = data.image
+              }
+              //window.location.reload()
               console.log('Image upload response:', data);
             } catch (error) {
               console.error('Failed to upload image:', error);
               throw error;
             }
           },
-          async deleteProfileImage() {
+        async deleteProfileImage() {
             try {
               const token = localStorage.getItem('jwt');
               const config = {
@@ -78,6 +88,13 @@ export const useAuthStore = defineStore('auth', {
               console.log('Sending request to delete image');
               const { data } = await axios.delete(API_URL + 'user/image', config);
               console.log('Image delete response:', data);
+              if(data) {
+                this.user.image = null
+                console.log(data)
+              }
+              //window.location.reload() 
+              console.log('Image delete response:', this.user.image);
+              router.push('/app')
             } catch (error) {
               console.error('Failed to delete image:', error);
               throw error;
@@ -91,6 +108,12 @@ export const useAuthStore = defineStore('auth', {
             const {data} = await axios.get(API_URL + 'auth')
             this.applyAuthentication(data)
             console.log(data)
+            if(data){
+                this.localtasklists=data.user.taskLists
+                console.log(this.localtasklists)
+            }
+            
+           
            // this.UserId = data.user.userId
            // console.log(this.UserId)
         },
@@ -110,17 +133,18 @@ export const useAuthStore = defineStore('auth', {
                 else{
                     console.log('token')
                 }
-                console.log(user)
+                
                 const config ={
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization':  token
                     }
                 }
-                const {data} = await axios.put(API_URL+'user/', user.value, config)
+                console.log(user)
+                const {data} = await axios.put(API_URL+'user/', user, config)
             console.log(data)
             this.user = data
-                
+            window.location.reload()
             }
             catch (error) {
                 console.error('Failed to update user:', error);}
@@ -132,9 +156,16 @@ export const useAuthStore = defineStore('auth', {
             const {data} = await axios.post(API_URL + 'auth/register', registration)
             this.applyAuthentication(data)
         },
-        logout() {
+        async logout() {
             this.user = null
+            this.userId= null
             localStorage.removeItem('jwt') // Zum Logout reicht es, wenn das Frontend den JWT "vergisst"
+            
+            this.isInitialized=false
+            await router.push('/')
+            window.location.reload()
+
+
         },
         applyAuthentication({user, accessToken}) {
             this.userId = user.userId
@@ -147,5 +178,59 @@ export const useAuthStore = defineStore('auth', {
             
              const {data} =axios.post(API_URL + 'user/password', passwordobj)
              console.log(data)
-            this.user = data
-      }}});
+            this.user = data},
+        async deleteaccount () {
+        try{
+            const token = localStorage.getItem('jwt');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                    'accept': 'application/json'
+                }
+            };
+            console.log('Sending request to delete account');
+            const { data } = await axios.delete(API_URL + 'user/', config);
+            console.log('Account delete response:', data);
+        } catch (error) {
+            console.error('Failed to delete account:', error);
+            throw error;}},
+        async createnewtasklist(tasklist){
+                try{
+                    const token = localStorage.getItem('jwt');
+                    const config = {
+                        headers: {
+                            'Authorization': token,
+                            'accept': 'application/json'
+                        }
+                    };
+                    
+                    const { data } = await axios.post(API_URL + 'tasklist', tasklist, config);
+                    if (data) {
+                        this.user.tasklists.push(data)
+                    }
+
+                    console.log('Tasklist create response:', data);
+                } catch (error) {
+                    console.error('Failed to create tasklist:', error);
+                    throw error;}},
+                    async loadtasklistsfromserver(){
+                        try{
+                            
+                           console.log('Sending request to load tasklists',3587);
+                           const asdasd = "3587"
+                            const { data } = await axios.get(API_URL + 'tasklist',asdasd);
+                            if (data) {
+                                console.log('Tasklist load response:', data);
+                                this.user.tasklists = data
+                            }
+                        }
+                        catch (error) {
+                            console.error('Failed to load tasklists:', error);
+                            throw error;}
+                    },
+                    async loadtasklistsfromserver(){
+
+                    }
+
+            
+}});
