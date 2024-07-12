@@ -16,6 +16,7 @@ import PersonalData from '@/views/personalData.vue'
 import UpdateProfilePhoto from '@/views/UpdateProfilePhoto.vue'
 import UpdateUserPassword from '@/views/UpdateUserPassword.vue'
 import AddnewTask from '@/views/AddnewTask.vue'
+import viewTasks from '@/views/viewTasks.vue'
 
 const routes = [
     {
@@ -47,7 +48,12 @@ const routes = [
                 name: 'UpdateUserPassword',
                 component: UpdateUserPassword
             },
-          {
+            {
+                path:'/viewTasks',
+                name: 'viewTasks',
+                component:viewTasks
+            },
+            {
                 path: '/AddnewTask',
                 name: 'AddnewTask',
                 component: AddnewTask
