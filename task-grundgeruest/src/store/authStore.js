@@ -237,6 +237,57 @@ export const useAuthStore = defineStore('auth', {
                 console.error('Failed to create task:', error);
                 throw error;
             }
-        }
+        },
+        async gettasksfromserver(){
+            try{
+                const { data } = await axios.get(API_URL + 'user/tasks')
+                if(data){
+                    this.tasks = data
+                    console.log(this.tasks)
+                }
+
+
+            }
+            catch{
+
+            }
+
+        },
+        async updateTask(updatedTask){
+            try{
+                const token = localStorage.getItem('jwt');
+                const config = {
+                    headers: {
+                        'Authorization': token,
+                        'accept': 'application/json'
+                    }
+                };
+                const { data } = await axios.put(API_URL + `task/${updatedTask.taskId}`, updatedTask, config);
+                if(data){
+                    const index = this.tasks.findIndex(task => task.taskId === updatedTask.taskId)
+                    if(index!== -1){
+                        this.tasks[index] = data
+                    }
+                }
+            }
+            catch{}
+
+        },
+        async deleteTask(taskId){
+            try{
+                const token = localStorage.getItem('jwt');
+                const config = {
+                    headers: {
+                        'Authorization': token,
+                        'accept': 'application/json'
+                    }
+                };
+                const { data } = await axios.delete(API_URL + `task/${taskId}`, config);
+                if(data){
+                    this.tasks = this.tasks.filter(task => task.taskId!== taskId)
+                }
+            }
+            catch{}
+        
     }
-});
+}})

@@ -38,7 +38,7 @@
             <v-icon>mdi-calendar-check</v-icon>
 
           </v-list-item-icon>
-          <v-list-item-title><h4>Add new Task</h4></v-list-item-title>
+          <v-list-item-title><h4>TasksLists/Tasks</h4></v-list-item-title>
         </v-list-item>
         <v-list-item link :to="{ name: 'PersonalData' }">
           <v-list-item-icon>

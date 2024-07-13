@@ -92,7 +92,7 @@
                 <v-text-field label="taskListId" v-model="newTask.taskListId" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field label="status" v-model="newTask.status" required></v-text-field>
+                <v-select label="status" :items="['TODO','IN_PROGRESS','DONE ']" v-model="newTask.status" required></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field label="points" v-model="newTask.points" required></v-text-field>
@@ -219,8 +219,15 @@ async function saveAddTask(){
     
   } 
   }
-  function viewTasklist(taskListId) {
+  async function viewTasklist(taskListId) {
     router.push({name: 'viewTasks'});
+    try{
+      await authStore.gettasksfromserver()
+
+    }
+    catch{
+
+    }
     
   }
 
