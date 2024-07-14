@@ -1,9 +1,10 @@
 <template>
   <v-app>
     <v-app-bar color="primary" app>
-      <v-app-bar-title v-if="authStore.isInitialized">
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-toolbar-title v-if="authStore.isInitialized">
         Hello, {{ authStore.user.firstName }} {{ authStore.user.lastName }}
-      </v-app-bar-title>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- Show basket button if user is logged in -->
       <v-btn text v-if="authStore.isUser" to="/basket">Warenkorb</v-btn>
@@ -18,91 +19,76 @@
     </v-app-bar>
 
     <v-navigation-drawer app permanent>
-      <v-list-item>
-        <v-list-item-avatar>
-          <div v-if="authStore.user.image">
-            <img :src="`https://codersbay.a-scho-wurscht.at/api/user/${authStore.userId}/image`" alt="User Avatar"
-            class="resized-image">
-          </div>
-          
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>{{ authStore.user.firstName }}</v-list-item-title>
-          <v-list-item-subtitle>{{ authStore.user.lastName }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+      <v-list>
+        <v-list-item>
+          <template v-slot:prepend>
+            
+            <div class="user-info pa-4">
+              <v-avatar size="150" class="mb-4">
+                <v-img
+                  v-if="authStore.user.image"
+                  :src="`https://codersbay.a-scho-wurscht.at/api/user/${authStore.userId}/image`"
+                  alt="User Avatar"
+                  cover
+                ></v-img>
+                <v-icon v-else size="150" color="grey lighten-1">mdi-account-circle</v-icon>
+              </v-avatar>
+              <div class="user-details text-center">
+                <div class="text-h6">{{ authStore.user.firstName }}</div>
+                <div class="text-subtitle-1">{{ authStore.user.lastName }}</div>
+              </div>
+            </div>
+          </template>
+        </v-list-item>
+      </v-list>
       <v-divider></v-divider>
       <v-list>
         <v-list-item link to="/AddnewTask">
-          <v-list-item-icon>
+          <template v-slot:prepend>
             <v-icon>mdi-calendar-check</v-icon>
-
-          </v-list-item-icon>
-          <v-list-item-title><h4>TasksLists/Tasks</h4></v-list-item-title>
+          </template>
+          <v-list-item-title>TasksLists/Tasks</v-list-item-title>
         </v-list-item>
         <v-list-item link :to="{ name: 'PersonalData' }">
-          <v-list-item-icon>
+          <template v-slot:prepend>
             <v-icon>mdi-account-circle</v-icon>
-          </v-list-item-icon>
+          </template>
           <v-list-item-title>Personal Data</v-list-item-title>
         </v-list-item>
         <v-list-item link :to="{ name: 'UpdateProfilePhoto' }">
-          <v-list-item-icon>
+          <template v-slot:prepend>
             <v-icon>mdi-camera</v-icon>
-          </v-list-item-icon>
+          </template>
           <v-list-item-title>Update Profile Photo</v-list-item-title>
         </v-list-item>
         <v-list-item link :to="{ name: 'UpdateUserPassword' }">
-          <v-list-item-icon>
+          <template v-slot:prepend>
             <v-icon>mdi-lock</v-icon>
-          </v-list-item-icon>
+          </template>
           <v-list-item-title>Change Password</v-list-item-title>
         </v-list-item>
 
-        <!-- <v-list-group prepend-icon="mdi-menu">
-          <template v-slot:activator>
-            <v-list-item-title>Products</v-list-item-title>
-          </template>
-          <v-list-item link to="#" title="Product 1">
-            <v-list-item-title>Product 1</v-list-item-title>
-          </v-list-item>
-          <v-list-item link to="#" title="Product 2">
-            <v-list-item-title>Product 2</v-list-item-title>
-          </v-list-item>
-          <v-list-item link to="#" title="Product 3">
-            <v-list-item-title>Product 3</v-list-item-title>
-          </v-list-item>
-          <v-list-item link to="#" title="Product 4">
-            <v-list-item-title>Product 4</v-list-item-title>
-          </v-list-item>
-        </v-list-group> -->
-        
         <v-list-item link to="/customers">
-          <v-list-item-icon>
+          <template v-slot:prepend>
             <v-icon>mdi-account-multiple</v-icon>
-          </v-list-item-icon>
+          </template>
           <v-list-item-title>Customers</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-main>
-      <router-view>
-
-      </router-view>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
-
-
 <script setup>
-
 import { useAuthStore } from '@/store/authStore'
-import personalData from '../views/personalData.vue'
 import { useRoute } from "vue-router";
-import PersonalData from '../views/personalData.vue';
-import AddnewTask from '../views/addNewTask.vue';
+import '@mdi/font/css/materialdesignicons.css'; 
+import 'vuetify/styles';
+
 const random = Math.floor(Math.random() * 85) + 1;
 console.log(random);
 const authStore = useAuthStore()
@@ -112,15 +98,21 @@ async function logout() {
   await authStore.logout()
 }
 const route = useRoute()
-const currentUrl = route.fullPath;
-console.log(currentUrl)
 </script>
 
 <style>
 .resized-image {
   width: 200px;
-  height: 200x;
+  height: 200px;
   object-fit: cover;
   /* This will keep the aspect ratio */
+}
+.user-details {
+  width: 100%;
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

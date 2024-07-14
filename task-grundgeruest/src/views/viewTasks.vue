@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col
+      <v-col 
         v-for="task in authStore.tasks"
         :key="task.taskId"
         cols="12"
@@ -47,8 +47,7 @@
             <v-chip color="black" text-color="black">
               {{ task.status }}
             </v-chip>
-          
-        </v-card>
+        </v-card> 
       </v-col>
     </v-row>
   </v-container>
@@ -59,6 +58,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/store/authStore';
 
 const authStore = useAuthStore()
+console.log(authStore.tasks)
 const uploudtask=ref({
   title: '',
   description: '',
@@ -92,6 +92,7 @@ const saveTitle = (task) => {
   // Add your save logic here, such as an API call to save the updated title
 }
 
+
 const cancelEditTitle = (task) => {
   task.isEditingTitle = false
 }
@@ -106,7 +107,7 @@ const cancelEditDescription = (task) => {
   task.isEditingDescription = false
 }
 
-// Ensure each task has the isEditingTitle and isEditingDescription properties
+//add proprties to task in task authstore 
 authStore.tasks.forEach(task => {
   task.isEditingTitle = false
   task.isEditingDescription = false
@@ -128,7 +129,7 @@ async function saveTask(task) {
     try {
       window.confirm('Are you sure you want to delete this task?')
       window.alert('Task deleted!')
-      window.location.reload()
+      //window.location.reload()
       await authStore.deleteTask(task.taskId);
     } catch (error) {
       console.log(error);

@@ -1,6 +1,50 @@
 <template>
   <v-container>
     <v-row justify="center">
+      <v-dialog v-model="isShareDialogOpen" persistent max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Share Tasklist</span>
+          </v-card-title>
+          <v-card-text>
+            <v-row class="task-card">
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="TaskListID" v-model="sharingTasklist.taskListId" required></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="UserID" v-model="sharingTasklist.userId"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click="closeShareDialog">Close</v-btn>
+            <v-btn color="blue darken-1" flat @click="saveShareData">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="isUNShareDialogOpen" persistent max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">UNShare Tasklist</span>
+          </v-card-title>
+          <v-card-text>
+            <v-row class="task-card">
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="TaskListID" v-model="unsharingTasklist.taskListId" required></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="UserID" v-model="unsharingTasklist.userId"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click="isUNShareDialogOpen=false">Close</v-btn>
+            <v-btn color="blue darken-1" flat @click="saveUNShareData">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-dialog v-model="isAddDialogOpen" persistent max-width="600px">
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark @click="isAddDialogOpen = true">Add New Tasklist</v-btn>
@@ -28,10 +72,10 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-container>
-      <v-col v-if="tasklists">
-        <v-row v-if="isTasklistVisible" sm="4" md="3" v-for="tasklist in tasklists" :key="tasklist.taskListId" class="task-card">
-          <v-card color="primary" class="pa-3" outlined>
+    <v-container justify="center">
+      <v-row >
+        <v-col v-if="isTasklistVisible" sm="4" md="3" v-for="tasklist in tasklists" :key="tasklist.taskListId" class="task-card">
+          <v-card color="primary" class="d-flex flex-column h-100" elevation="2">
             <v-card-title class="headline mb-1">{{ tasklist.slug }}</v-card-title>
             <v-card-subtitle>User ID: {{ tasklist.userId }}</v-card-subtitle>
             <v-card-text>
@@ -39,15 +83,17 @@
               <div>Label: {{ tasklist.label }}</div>
               <div>Description: {{ tasklist.description }}</div>
             </v-card-text>
-            <v-card-actions class="d-flex flex-column align-start">
+            <v-card-actions class="mt-auto d-flex flex-column">
+              <v-btn @click="unsharewithuser(tasklist.taskListId)" class="mb-2">UNShare</v-btn>
+              <v-btn @click="sharewithuser(tasklist.taskListId)" class="mb-2">Share</v-btn>
               <v-btn @click="viewTasklist(tasklist.taskListId)" class="mb-2">View</v-btn>
-              <v-btn @click="triggeraddtaskdialog(tasklist.taskListId);addTask(tasklist.taskListId) " class="mb-2">Add Task</v-btn>
+              <v-btn @click="triggeraddtaskdialog(tasklist.taskListId) " class="mb-2">Add Task</v-btn>
               <v-btn @click="openEditDialog(tasklist)" class="mb-2">Edit</v-btn>
-              <v-btn @click="deleteTasklist(tasklist.taskListId)">Delete</v-btn>
+              <v-btn @click="deleteTasklist(tasklist.taskListId)" class="mb-2">Delete</v-btn>
             </v-card-actions>
           </v-card>
-        </v-row>
-      </v-col>
+        </v-col>
+      </v-row>
       <v-dialog v-model="isEditDialogOpen" persistent max-width="600px">
         <template v-slot:activator="{ on }"> </template>
         <v-card>
@@ -66,7 +112,7 @@
                 <v-text-field label="Slug" v-model="editingTasklist.slug" required></v-text-field>
               </v-col>
             </v-row>
-          </v-card-text>
+          </v-card-text>xcc
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="closeEditDialog">Close</v-btn>
@@ -128,11 +174,56 @@ const authStore = useAuthStore();
 const newTasklistTitle = ref('');
 const newTasklistDescription = ref('');
 const editingTasklist = ref({});
+const sharingTasklist = ref({
+  taskListId: '',
+  userId: ''
+});
+const unsharingTasklist = ref({
+  taskListId: '',
+  userId: ''})
+
 
 const tasklists = authStore.tasklists;
-
 const isAddDialogOpen = ref(false);
 const isEditDialogOpen = ref(false);
+const isShareDialogOpen = ref(false);
+const isUNShareDialogOpen = ref(false);
+ function closeUNShareDialog() {
+  isShareDialogOpen.value = false;
+}
+function unsharewithuser(tasklistId) {
+  unsharingTasklist.value = {
+    taskListId: tasklistId
+  }
+    isUNShareDialogOpen.value = true;
+  }
+function saveUNShareData() {
+      unsharingTasklist.value = {
+        taskListId: unsharingTasklist.value.taskListId,
+        userId: unsharingTasklist.value.userId
+      }
+      authStore.unsharetasklistwithuser(unsharingTasklist.value);
+      console.log(unsharingTasklist.value);
+      isShareDialogOpen.value = false;
+    }
+function closeShareDialog() {
+  isShareDialogOpen.value = false;}
+function sharewithuser(tasklistId) {
+  sharingTasklist.value = {
+    taskListId: tasklistId}
+    isShareDialogOpen.value = true;}
+async function saveShareData() {
+   sharingTasklist.value = {
+    taskListId: sharingTasklist.value.taskListId,
+    userId: sharingTasklist.value.userId
+  }
+  await authStore.sharetasklistwithuser(sharingTasklist.value);
+
+  console.log(sharingTasklist.value);
+  isShareDialogOpen.value = false;
+}
+
+
 
 function closeAddDialog() {
   isAddDialogOpen.value = false;
@@ -221,8 +312,10 @@ async function saveAddTask(){
   }
   async function viewTasklist(taskListId) {
     router.push({name: 'viewTasks'});
+   // router.push({name: 'viewTasks', params: { id: taskListId }});
+    //authStore.taskListId=taskListId
     try{
-      await authStore.gettasksfromserver()
+      await authStore.gettasksfromserver(taskListId)
 
     }
     catch{

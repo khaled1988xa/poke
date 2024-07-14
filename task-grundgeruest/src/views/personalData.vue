@@ -54,7 +54,7 @@ const confirmDelete = () => {
 
 const deleteAccount = async () => {
   try {
-    await authStore.deleteaccount();
+    await authStore.deleteAccountonserver();
     deleteDialog.value = false;
     router.push('/');
   } catch (error) {
@@ -65,7 +65,7 @@ const deleteAccount = async () => {
 
 const save = async () => {
   try {
-    await authStore.updateuseronserver(user.value);
+    await authStore.updateUserOnServer(user.value);
     router.push('/');
   } catch (error) {
     // Handle the error

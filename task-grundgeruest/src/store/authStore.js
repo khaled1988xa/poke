@@ -133,7 +133,7 @@ export const useAuthStore = defineStore('auth', {
             const { data } = await axios.post(API_URL + 'user/password', passwordObj)
             this.user = data
         },
-        async deleteAccount() {
+        async deleteAccountonserver() {
             try {
                 const token = localStorage.getItem('jwt');
                 const config = {
@@ -238,11 +238,13 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async gettasksfromserver(){
+        async gettasksfromserver(tasklistId) {
             try{
-                const { data } = await axios.get(API_URL + 'user/tasks')
+                const { data } = await axios.get(API_URL + 'tasklist/'+tasklistId)
                 if(data){
-                    this.tasks = data
+                    console.log(data)
+                    //const filteredTasks = data.filter(task => task.taskListId === tasklistId)
+                    this.tasks = data.tasks
                     console.log(this.tasks)
                 }
 
@@ -289,5 +291,38 @@ export const useAuthStore = defineStore('auth', {
             }
             catch{}
         
-    }
+    },
+        async sharetasklistwithuser(sharingTasklist){
+            try{
+                const token = localStorage.getItem('jwt');
+                const config = {
+                    headers: {
+                        'Authorization': token,
+                        'accept': 'application/json'
+                    }
+                };
+                const { data } = await axios.post(API_URL + `tasklist/`+sharingTasklist.taskListId+'/user/'+sharingTasklist.userId , config);
+                if(data){
+
+                    this.sharedtasklists.push(data)
+                }
+            }
+            catch{}
+        },
+        async unsharetasklistwithuser(unsharingTasklist){
+            try{
+                const token = localStorage.getItem('jwt');
+                const config = {
+                    headers: {
+                        'Authorization': token,
+                        'accept': 'application/json'
+                    }
+                };
+                const { data } = await axios.delete(API_URL + `tasklist/`+unsharingTasklist.taskListId+'/user/'+unsharingTasklist.userId , config);
+                if(data){
+                    this.sharedtasklists = this.sharedtasklists.filter(tasklist => tasklist.taskListId!== unsharingTasklist.taskListId)
+                }
+            }
+            catch{}
+        }
 }})

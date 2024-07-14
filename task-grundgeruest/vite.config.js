@@ -17,7 +17,8 @@ export default defineConfig({
       autoImport: true,
     }),
   ],
-  define: { 'process.env': {} },
+  define: { 'process.env': {},
+ },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

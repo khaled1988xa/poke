@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/authStore'
 
+
 // Layouts
 import AuthenticationLayout from '@/layouts/AuthenticationLayout.vue'
 import ApplicationLayout from '@/layouts/ApplicationLayout.vue'
@@ -17,6 +18,7 @@ import UpdateProfilePhoto from '@/views/UpdateProfilePhoto.vue'
 import UpdateUserPassword from '@/views/UpdateUserPassword.vue'
 import AddnewTask from '@/views/AddnewTask.vue'
 import viewTasks from '@/views/viewTasks.vue'
+
 
 const routes = [
     {
@@ -49,7 +51,8 @@ const routes = [
                 component: UpdateUserPassword
             },
             {
-                path:'/viewTasks',
+                path: 'viewTasks',
+                //path:`/viewTasks/:id`,
                 name: 'viewTasks',
                 component:viewTasks
             },
@@ -63,6 +66,8 @@ const routes = [
                 component: ProductCreateView,
                 beforeEnter: (to, from, next) => {
                     const authStore = useAuthStore()
+                    
+
                     if (!authStore.isAdmin) {
                         return next('/app')
                     }
