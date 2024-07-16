@@ -25,5 +25,5 @@
   </template>
   
   <script setup>
-  // No additional logic needed for now
+
   </script>

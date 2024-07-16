@@ -143,6 +143,8 @@ export const useAuthStore = defineStore('auth', {
                     }
                 };
                 const { data } = await axios.delete(API_URL + 'user/', config);
+                router.push('/')
+                window.location.reload()
             } catch (error) {
                 console.error('Failed to delete account:', error);
                 throw error;
@@ -187,11 +189,11 @@ export const useAuthStore = defineStore('auth', {
                     }
                 };
                 const { data } = await axios.delete(API_URL + `tasklist/${taskListId}`, config);
-                window.location.reload()
-                if (data) {
+                //window.location.reload()
+               
                     this.tasklists = this.tasklists.filter(tasklist => tasklist.taskListId !== taskListId)
                     
-                }
+              
             } catch (error) {
                 console.error('Failed to delete tasklist:', error);
                 throw error;
@@ -285,9 +287,15 @@ export const useAuthStore = defineStore('auth', {
                     }
                 };
                 const { data } = await axios.delete(API_URL + `task/${taskId}`, config);
-                if(data){
-                    this.tasks = this.tasks.filter(task => task.taskId!== taskId)
-                }
+                //if(data){
+                    this.tasks = this.tasks.filter(task => task.taskId !== taskId);
+                    //gettasksfromserver()
+                    //const index  =this.tasks.findIndex(task => task.taskId === taskId)
+                    //router.push('viewTasks')
+                    //console.log(index)
+                    //console.log(this.tasks)
+                    //this.tasks = this.tasks.splice(index, 1)
+                //}
             }
             catch{}
         

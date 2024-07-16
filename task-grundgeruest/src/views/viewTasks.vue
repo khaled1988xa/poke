@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col 
+      <v-col v-if="authStore.tasks.length>0"
         v-for="task in authStore.tasks"
         :key="task.taskId"
         cols="12"
@@ -89,7 +89,7 @@ const toggleState = (task) => {
 const saveTitle = (task) => {
   task.isEditingTitle = false
  
-  // Add your save logic here, such as an API call to save the updated title
+ 
 }
 
 
@@ -100,14 +100,14 @@ const cancelEditTitle = (task) => {
 const saveDescription = (task) => {
   task.isEditingDescription = false
   
-  // Add your save logic here, such as an API call to save the updated description
+  
 }
 
 const cancelEditDescription = (task) => {
   task.isEditingDescription = false
 }
 
-//add proprties to task in task authstore 
+
 authStore.tasks.forEach(task => {
   task.isEditingTitle = false
   task.isEditingDescription = false
@@ -127,10 +127,11 @@ async function saveTask(task) {
   }}
   async function deleteTask(task) {
     try {
-      window.confirm('Are you sure you want to delete this task?')
-      window.alert('Task deleted!')
+      //window.confirm('Are you sure you want to delete this task?')
+      //window.alert('Task deleted!')
       //window.location.reload()
       await authStore.deleteTask(task.taskId);
+     
     } catch (error) {
       console.log(error);
     }

@@ -55,7 +55,7 @@ const uploadPhoto = async () => {
     if (selectedFile.value) {
       console.log('Uploading file:', selectedFile.value);
       await authStore.uploadProfileImage(selectedFile.value);
-      router.push('/'); // Navigate to home after uploading
+      router.push('/'); 
     } else {
       console.error('No file selected');
     }
@@ -66,7 +66,7 @@ const uploadPhoto = async () => {
 const deletephotofromserver = async () => {
   try {
     await authStore.deleteProfileImage();
-    router.push('/'); // Navigate to home after deleting
+    router.push('/');
   }
   catch (error) {
     console.error('Error deleting photo:', error);

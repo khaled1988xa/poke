@@ -6,15 +6,8 @@
         Hello, {{ authStore.user.firstName }} {{ authStore.user.lastName }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- Show basket button if user is logged in -->
-      <v-btn text v-if="authStore.isUser" to="/basket">Warenkorb</v-btn>
-      <!-- Show product creation button if user is an admin -->
-      <v-btn text v-if="authStore.isAdmin" to="/new-product">Produkt anlegen</v-btn>
-      <!-- Show logout button if user is logged in -->
       <v-btn text v-if="authStore.isLoggedIn" @click="logout">Logout</v-btn>
-      <!-- Show login button if authStore is not initialized -->
       <v-btn text v-else-if="!authStore.isInitialized" to="/login">Login</v-btn>
-      <!-- Show register button if authStore is not initialized -->
       <v-btn text v-if="!authStore.isInitialized" to="/register">Registrieren</v-btn>
     </v-app-bar>
 
@@ -105,7 +98,7 @@ const route = useRoute()
   width: 200px;
   height: 200px;
   object-fit: cover;
-  /* This will keep the aspect ratio */
+ 
 }
 .user-details {
   width: 100%;

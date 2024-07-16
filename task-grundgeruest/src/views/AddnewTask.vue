@@ -47,8 +47,7 @@
       </v-dialog>
       <v-dialog v-model="isAddDialogOpen" persistent max-width="600px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark @click="isAddDialogOpen = true">Add New Tasklist</v-btn>
-          <v-btn color="primary" dark @click="toggleTasklistVisibility">Load available Tasklist from server</v-btn>
+          <v-btn color="black" dark @click="isAddDialogOpen = true">Add New Tasklist</v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -57,10 +56,10 @@
           <v-card-text>
             <v-row>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Title" required v-model="newTasklistTitle"></v-text-field>
+                <v-text-field label="Title" required v-model="newtasklist.label"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Description" v-model="newTasklistDescription"></v-text-field>
+                <v-text-field label="Description" v-model="newtasklist.description"></v-text-field>
               </v-col>
             </v-row>
           </v-card-text>
@@ -74,7 +73,7 @@
     </v-row>
     <v-container justify="center">
       <v-row >
-        <v-col v-if="isTasklistVisible" sm="4" md="3" v-for="tasklist in tasklists" :key="tasklist.taskListId" class="task-card">
+        <v-col v-if="isTasklistVisible" sm="4" md="3" v-for="tasklist in authStore.tasklists" :key="tasklist.taskListId" class="task-card">
           <v-card color="primary" class="d-flex flex-column h-100" elevation="2">
             <v-card-title class="headline mb-1">{{ tasklist.slug }}</v-card-title>
             <v-card-subtitle>User ID: {{ tasklist.userId }}</v-card-subtitle>
@@ -138,7 +137,7 @@
                 <v-text-field label="taskListId" v-model="newTask.taskListId" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select label="status" :items="['TODO','IN_PROGRESS','DONE ']" v-model="newTask.status" required></v-select>
+                <v-select label="status" :items="['TODO','IN_PROGRESS','DONE']" v-model="newTask.status" required></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field label="points" v-model="newTask.points" required></v-text-field>
@@ -163,16 +162,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const authStore = useAuthStore();
+onMounted(() => {
+  toggleTasklistVisibility();})
 
-
-const newTasklistTitle = ref('');
-const newTasklistDescription = ref('');
+  const newtasklist=ref({
+    label:'',
+    description:'',
+  });
+//const newTasklistTitle = ref('');
+//const newTasklistDescription = ref('');
 const editingTasklist = ref({});
 const sharingTasklist = ref({
   taskListId: '',
@@ -241,11 +245,16 @@ function toggleTasklistVisibility() {
 
 const createTasklist = async () => {
   const tasklist = {
-    label: newTasklistTitle.value,
-    description: newTasklistDescription.value
+   label: newtasklist.value.label,
+    description: newtasklist.value.description,
+    
   };
 
   await authStore.createNewTasklist(tasklist);
+  newtasklist.value = {
+    label: '',
+    description: '',
+  };
   isAddDialogOpen.value = false;
 }
 

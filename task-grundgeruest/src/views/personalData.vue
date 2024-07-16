@@ -1,4 +1,4 @@
-<!-- src/views/PersonalData.vue -->
+
 <template>
   <v-container>
     <v-card>
@@ -9,14 +9,14 @@
           <v-text-field v-model="user.lastName" label="Last Name"></v-text-field>
           <v-text-field v-model="user.email" label="Email"></v-text-field>
           <v-text-field v-model="user.username" label="Username"></v-text-field>
-          <!-- Add other fields as needed -->
+       
           <v-btn @click="save">Save</v-btn>
           <v-btn @click="confirmDelete" color="error">Delete Account</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
 
-    <!-- Confirmation Dialog -->
+    
     <v-dialog v-model="deleteDialog" max-width="300">
       <v-card>
         <v-card-title>Confirm Account Deletion</v-card-title>
