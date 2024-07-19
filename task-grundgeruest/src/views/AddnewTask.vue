@@ -226,9 +226,6 @@ async function saveShareData() {
   console.log(sharingTasklist.value);
   isShareDialogOpen.value = false;
 }
-
-
-
 function closeAddDialog() {
   isAddDialogOpen.value = false;
 }
@@ -311,6 +308,8 @@ async function saveAddTask(){
       ...newTask.value}
       await authStore.createNewTask(task);
       isAddtaskdialogOpen.value = false;
+      viewTasklist(newTask.value.taskListId);
+
       console.log(newTask);
     }
      

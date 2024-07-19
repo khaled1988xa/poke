@@ -36,7 +36,7 @@ const routes = [
                 component: HomeView
             },
             {
-                path: 'personal-data',
+                path: '/personal-data',
                 name: 'PersonalData',
                 component: PersonalData
             },
@@ -61,19 +61,7 @@ const routes = [
                 name: 'AddnewTask',
                 component: AddnewTask
             },
-            {
-                path: 'new-product',
-                component: ProductCreateView,
-                beforeEnter: (to, from, next) => {
-                    const authStore = useAuthStore()
-                    
-
-                    if (!authStore.isAdmin) {
-                        return next('/app')
-                    }
-                    return next()
-                }
-            }
+           
         ]
     },
     {

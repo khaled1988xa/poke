@@ -66,7 +66,13 @@ const deleteAccount = async () => {
 const save = async () => {
   try {
     await authStore.updateUserOnServer(user.value);
-    router.push('/');
+    router.push('/personal-data')
+    user.value={
+      firstName: '',
+      lastName: '',
+      email: '',
+      username: '',
+    }
   } catch (error) {
     // Handle the error
     console.error('Error updating user:', error);

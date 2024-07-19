@@ -61,12 +61,7 @@
           <v-list-item-title>Change Password</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link to="/customers">
-          <template v-slot:prepend>
-            <v-icon>mdi-account-multiple</v-icon>
-          </template>
-          <v-list-item-title>Customers</v-list-item-title>
-        </v-list-item>
+        
       </v-list>
     </v-navigation-drawer>
 

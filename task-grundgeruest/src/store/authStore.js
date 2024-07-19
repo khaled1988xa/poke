@@ -107,7 +107,8 @@ export const useAuthStore = defineStore('auth', {
                 };
                 const { data } = await axios.put(API_URL + 'user/', user, config)
                 this.user = data
-                window.location.reload()
+                
+               // window.location.reload()
             } catch (error) {
                 console.error('Failed to update user:', error);
             }

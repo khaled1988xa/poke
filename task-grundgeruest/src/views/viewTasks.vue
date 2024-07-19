@@ -1,7 +1,9 @@
 <template>
+  
+
   <v-container>
     <v-row>
-      <v-col v-if="authStore.tasks.length>0"
+      <v-col 
         v-for="task in authStore.tasks"
         :key="task.taskId"
         cols="12"
@@ -51,6 +53,7 @@
       </v-col>
     </v-row>
   </v-container>
+
 </template>
   
 <script setup>
