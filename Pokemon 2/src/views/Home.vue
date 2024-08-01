@@ -127,6 +127,7 @@ function fetchPokemon(pokemonId,randomPokiimonId)  {
   
 function openDetail(index,id){
   authStore.openDetailsView(index,id)
+  console.log(authStore.pokemonIndex)
   
   
 }

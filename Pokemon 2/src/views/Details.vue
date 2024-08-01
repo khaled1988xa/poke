@@ -1,50 +1,79 @@
 <template>
-<div>
-    <h1 class="card">Details</h1>
-    <div >
-        <v-card class="container">
-            <v-card-title><h1 style="text-transform: capitalize;" > Name:{{ AuthStore.pokemonIndex.name }} ID:{{AuthStore.pokemonIndex.id}}</h1></v-card-title>
-            
-            <v-card-text>
-                <!-- <h1>{{ AuthStore.pokemon.id }}</h1> -->
-                <img class="image" :src="AuthStore.pokemonIndex.image" alt="Pokemon Image">
-                <h1>Height: {{ AuthStore.pokemonIndex.height/10 }} M  </h1>
-                <h1>Weight: {{ AuthStore.pokemonIndex.weight/10 }} KG</h1>
-                <h1 style="text-transform: capitalize;">Type: {{ AuthStore.pokemonIndex.types.at(0).type.name }}</h1>
-                <h1 style="text-transform: capitalize;">Abilities: {{ AuthStore.pokemonIndex.abilities.at(0).ability.name }},
-                                {{ AuthStore.pokemonIndex.abilities.at(1).ability.name }}</h1>
-                <h1>base_experience: {{ AuthStore.pokemonIndex.base_experience }}</h1>         
-                  <audio controls>
-                    <source :src="AuthStore.pokemonIndex.cries" type="audio/ogg">
-                    Your browser does not support the audio tag.
-                  </audio>
-            </v-card-text>
-        </v-card>
+    <div>
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" md="8">
+            <v-card class="mx-auto my-4" max-width="800">
+              <v-row>
+                <!-- Information on the left -->
+                <v-col cols="12" md="6">
+                  <v-card-title>
+                    <h1 class="text-h5" style="text-transform: capitalize;">
+                      Name: {{ AuthStore.pokemonIndex.name }} ID: {{ AuthStore.pokemonIndex.id }}
+                    </h1>
+                  </v-card-title>
+                  <v-card-text>
+                    <h1>Height: {{ AuthStore.pokemonIndex.height / 10 }} M</h1>
+                    <h1>Weight: {{ AuthStore.pokemonIndex.weight / 10 }} KG</h1>
+                    <h1 style="text-transform: capitalize;">Type: 
+                      {{ AuthStore.pokemonIndex.types && AuthStore.pokemonIndex.types.length > 0 ? AuthStore.pokemonIndex.types[0].type.name : 'N/A' }}
+                    </h1>
+                    <h1 style="text-transform: capitalize;">Abilities: 
+                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 0 ? AuthStore.pokemonIndex.abilities[0].ability.name : 'N/A' }}
+                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 1 ? ', ' + AuthStore.pokemonIndex.abilities[1].ability.name : '' }}
+                    </h1>
+                    <h1>Base Experience: {{ AuthStore.pokemonIndex.base_experience }}</h1>
+                  </v-card-text>
+                  <v-card-actions>
+                    <audio controls v-if="AuthStore.pokemonIndex.cries">
+                      <source :src="AuthStore.pokemonIndex.cries" type="audio/ogg">
+                      Your browser does not support the audio tag.
+                    </audio>
+                  </v-card-actions>
+                </v-col>
+                <!-- Image on the right -->
+                <v-col cols="12" md="8">
+                  <img
+                    :src="AuthStore.pokemonIndex.image"
+                    alt="Pokemon Image"
+                    class="image"
+                  />
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
-</div>
-</template>
+  </template>
+  
+  
+  
 
-<script setup> 
-
-import { useAuthStore } from '../stores/authStore'
-
-const AuthStore = useAuthStore()
-console.log(AuthStore.LocalPokemonArray)
-
-   </script>
+  <script setup>
+  import { useAuthStore } from '../stores/authStore'
+  
+  const AuthStore = useAuthStore()
+  console.log(AuthStore.LocalPokemonArray)
+  console.log('Pokemon Image URL:', AuthStore.pokemonIndex.image)
+  </script>
 
 <style scoped>
-.container{
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    padding: 20px;
-    justify-content: center;
-
+.card {
+  text-align: center;
+  margin-top: 20px;
 }
-.image
-{
-    width: 600px;
-    height: 450px;
+
+.container {
+  padding: 20px;
+}
+
+.image {
+  width: 500px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  
+  
 }
 </style>

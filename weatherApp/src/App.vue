@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import 'vuetify/dist/vuetify.min.css'
 const citydata =ref('');
 const cityobject=ref({});
 const weatherdata=ref({});
@@ -63,18 +64,59 @@ async function fetchweatherdata(){
 </script>
 
 <template>
-  <main>
+  <!-- <main>
+    <div class="container">
+      <nav>
     <input type="text" placeholder="Please input the City name" v-model="citydata" />
     <button @click="getcitycoordinates">Submit</button>
     <button @click="fetchweatherdata">weather</button>
-  </main>
-  <div>
-    <h1>CityName  {{cityobject.cityname}}</h1>
+    </nav>
+    <br>
+  
+  <v-card
+      class="card"
+      max-width="400"
+    >
+    <v-card-title>Weather</v-card-title>
+    <v-card-text>
+      sjöslkadfjaölkjfd  <h1>CityName  {{cityobject.cityname}}</h1>
     <p>Temp: {{ temperature }}</p>
-    <p>Weather  {{ weather }} </p>
-    </div>
+    <p>Weather  {{ weather }} </p> -->
+    <!-- </v-card-text>
+  </v-card>
+</div>
+</main> -->
+
+
+<v-container>
+  <v-row justify="center">
+    <v-col cols="12" sm="8" md="6">
+      <v-card class="mx-auto" max-width="400">
+        <v-card-title>Weather</v-card-title>
+        <v-card-text>
+          <p>City: {{ cityobject.cityname }}</p>
+          <p>Temperature: {{ temperature }}</p>
+          <p>Weather: {{ weather }}</p>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+</v-container>
 </template>
 
 <style scoped>
+.card {
+  margin-bottom: 20px;
+  background-color: aqua;
+  width: fit-content;
+  height: fit-content;
+  text-align: center;
+  
+  border: 2px;
+  border-radius: 10px;
+  border-color: black;
+  border-style: solid;
+  
 
+}
 </style>

@@ -20,6 +20,7 @@ export const useAuthStore = defineStore('auth',  {
       types: [],
     },
     pokemonIndex:{
+      
 
     },
     typeColor: {},
