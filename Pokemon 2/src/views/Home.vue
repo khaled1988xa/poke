@@ -11,6 +11,7 @@
     <div class="input">
         <input v-model="pokemonId" placeholder="Enter Pokémon ID or Name">
         <button @click="fetchPokemon(pokemonId)">Search</button>
+        <button @click="fetchPokemon1(pokemonId)">getfromdb</button>
         <button @click="feelsLucky">Feels Lucky</button>
         <div>
           <button @click="increment">+</button>
@@ -66,6 +67,36 @@ const authStore = useAuthStore()
 const router=useRouter()
 const route = useRoute()
 
+
+
+const pokemons = [
+    {
+        id: 1,
+        name: 'bulbasaur',
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
+        abilities: [{ name: 'overgrow' }, { name: 'chlorophyll' }],
+        moves: [{ name: 'razor-wind' }, { name: 'swords-dance' }],
+        weight: 69,
+        height: 7,
+        types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+        base_experience: 64
+    },
+    // Add more Pokémon data as needed
+];
+
+pokemons.forEach(async (pokemon) => {
+    try {
+        const response = await axios.post('http://localhost:3000/pokemon', pokemon);
+        console.log(`Added ${pokemon.name}: ${response.status}`);
+    } catch (error) {
+        console.error(`Failed to add ${pokemon.name}: `, error);
+    }
+});
+
+
+
+
+
 const pokemonId = ref('')
 
 const allpokemon = ref({})
@@ -77,9 +108,9 @@ function increment() {
   pokemonId.value++
   ///fetchPokemon(pokemonId.value)
 };
+
 function decrement() {
   pokemonId.value--
-  
 };
  onMounted(() => {
    //retieveAllPokemons()
@@ -93,6 +124,9 @@ function decrement() {
 function fetchPokemon(pokemonId,randomPokiimonId)  {
   authStore.fetchPokemon(pokemonId,randomPokiimonId)
   
+  }
+  function fetchPokemon1(pokemonId)  {
+    authStore.fetchPokemon1(pokemonId)
   }
 
  async function retieveAllPokemons(){

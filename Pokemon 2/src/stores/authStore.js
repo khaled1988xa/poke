@@ -33,35 +33,48 @@ export const useAuthStore = defineStore('auth',  {
   getters: {
   },
   actions: {
-    async fetchPokemon(pokemonId,randomPokiimonId) {
-      this.pokemonId=randomPokiimonId
-        this.error = null
+    async fetchPokemon(pokemonId, randomPokiimonId) {
+      this.pokemonId = randomPokiimonId;
+      this.error = null;
       try {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-         console.log(response.data) 
-        this.pokemon = {
-          name: response.data.name,
-          id: response.data.id,
-          image: response.data.sprites.other.dream_world.front_default,
-          abilities: response.data.abilities,
-          moves: response.data.moves,
-          weight: response.data.weight,
-          height: response.data.height,
-          types: response.data.types,
-          base_experience: response.data.base_experience,
-          cries: response.data.cries.legacy
-        }
-
-        this.LocalPokemonArray.push(this.pokemon)
-        console.log(this.LocalPokemonArray)
-        this.cardcolor(this.pokemon.types,this.pokemon.id)
-
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+        const data = response.data;
+        console.log(data);
+    
+        const pokemon = {
+          id: data.id,
+          name: data.name,
+          image: data.sprites.other.dream_world.front_default,
+          abilities: data.abilities.map(a => a.ability.name),
+          moves: data.moves.map(m => m.move.name),
+          weight: data.weight,
+          height: data.height,
+          types: data.types.map(t => t.type.name),
+          base_experience: data.base_experience,
+        };
+    
+        this.LocalPokemonArray.push(pokemon);
+    
+        await axios.post('http://localhost:3000/pokemon', {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.image,
+          abilities: JSON.stringify(pokemon.abilities),
+          moves: JSON.stringify(pokemon.moves),
+          weight: pokemon.weight,
+          height: pokemon.height,
+          types: JSON.stringify(pokemon.types),
+          base_experience: pokemon.base_experience,
+        });
+    
+        console.log('Pokemon added successfully:', pokemon);
+        console.log(this.LocalPokemonArray);
+        this.cardcolor(pokemon.types, pokemon.id);
+      } catch (error) {
+        console.error('Error fetching and saving Pokemon data', error);
+      }
     }
-    catch  {
-      
-    }
-
-  },
+    ,
 
   cardcolor(types,id){
     console.log(types)
@@ -103,7 +116,64 @@ export const useAuthStore = defineStore('auth',  {
    
   
     
+  },
+  async fetchPokemon1(pokemonId) {
+    try {
+      const response = await axios.get(`http://localhost:3000/pokemon/${pokemonId}`);
+      const data = response.data;
+      console.log('Received data:', data);
+  
+      // Log individual fields
+      console.log('Abilities:', data.abilities);
+      console.log('Moves:', data.moves);
+      console.log('Types:', data.types);
+  
+      let abilities = [];
+      let moves = [];
+      let types = [];
+  
+      try {
+        abilities = JSON.parse(data.abilities);
+      } catch (e) {
+        console.error('Error parsing abilities:', e);
+      }
+  
+      try {
+        moves = JSON.parse(data.moves);
+      } catch (e) {
+        console.error('Error parsing moves:', e);
+      }
+  
+      try {
+        types = JSON.parse(data.types);
+      } catch (e) {
+        console.error('Error parsing types:', e);
+      }
+  
+      this.pokemon = {
+        name: data.name,
+        id: data.id,
+        image: data.image,
+        abilities: abilities,
+        moves: moves,
+        weight: data.weight,
+        height: data.height,
+        types: types,
+        base_experience: data.base_experience,
+      };
+  
+      this.LocalPokemonArray.push(this.pokemon);
+  
+      console.log('Response data:', data);
+      console.log(this.LocalPokemonArray);
+      //cardcolor(pokemon.types, pokemon.id);
+    } catch (error) {
+      console.error('Error fetching Pokemon data', error);
+    }
   }
+  
+  
+  
   
 
  
