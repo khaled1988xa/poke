@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import {useRouter,useRoute} from 'vue-router'
 import router from '@/router'
+import { parse } from 'vue/compiler-sfc'
 
 
 export const useAuthStore = defineStore('auth',  {
@@ -20,15 +21,9 @@ export const useAuthStore = defineStore('auth',  {
       types: [],
     },
     pokemonIndex:{
-      
-
     },
     typeColor: {},
     error: null,    
-
-
-
-    
   }),
   getters: {
   },
@@ -39,6 +34,7 @@ export const useAuthStore = defineStore('auth',  {
       try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
         const data = response.data;
+        
         console.log(data);
     
         const pokemon = {
@@ -54,8 +50,10 @@ export const useAuthStore = defineStore('auth',  {
         };
     
         this.LocalPokemonArray.push(pokemon);
+        this.cardcolor(pokemon.types, pokemon.id);
     
-        await axios.post('http://localhost:3000/pokemon', {
+        await axios.post('http://localhost:3000/pokemon', 
+          {
           id: pokemon.id,
           name: pokemon.name,
           image: pokemon.image,
@@ -68,18 +66,16 @@ export const useAuthStore = defineStore('auth',  {
         });
     
         console.log('Pokemon added successfully:', pokemon);
-        console.log(this.LocalPokemonArray);
-        this.cardcolor(pokemon.types, pokemon.id);
+        console.log(pokemon.types, pokemon.id);
+
+        
       } catch (error) {
         console.error('Error fetching and saving Pokemon data', error);
       }
-    }
-    ,
-
+    },
   cardcolor(types,id){
-    console.log(types)
-    console.log(types[0].type.name)
-    const typeName=types[0].type.name
+    const typeName = types[0];
+    console.log(typeName);
     const colorMapping={
       'normal':'#a8a878',
       'fire':'#f08030',
@@ -101,7 +97,9 @@ export const useAuthStore = defineStore('auth',  {
       'fairy':'#ee99ac'
   
     }
-    this.typeColor[id]=colorMapping[typeName]
+    this.typeColor[id] = colorMapping[typeName] || '#ffffff'; // default color if type not found
+    console.log(`Color set for ${id}: ${this.typeColor[id]}`);
+  
   },
    openDetailsView(index,id){
     router.push({name:'Details',params:{id:id}})
@@ -110,12 +108,7 @@ export const useAuthStore = defineStore('auth',  {
        this.pokemonIndex =this.LocalPokemonArray[index]
       console.log(this.pokemonIndex)
       console.log(index) 
-
     }
-     
-   
-  
-    
   },
   async fetchPokemon1(pokemonId) {
     try {
@@ -140,17 +133,19 @@ export const useAuthStore = defineStore('auth',  {
   
       try {
         moves = JSON.parse(data.moves);
+        console.log(moves);
       } catch (e) {
         console.error('Error parsing moves:', e);
       }
   
       try {
         types = JSON.parse(data.types);
+        console.log(types);
       } catch (e) {
         console.error('Error parsing types:', e);
       }
   
-      this.pokemon = {
+      const pokemon = {
         name: data.name,
         id: data.id,
         image: data.image,
@@ -162,15 +157,53 @@ export const useAuthStore = defineStore('auth',  {
         base_experience: data.base_experience,
       };
   
-      this.LocalPokemonArray.push(this.pokemon);
-  
+      this.LocalPokemonArray.push(pokemon);
+      this.cardcolor(JSON.parse(pokemon.types), pokemon.id); // Call cardcolor function with pokemon.types, pokemon.id);
+      console.log(pokemon.types)
+      console.log(JSON.parse(pokemon.types));
       console.log('Response data:', data);
       console.log(this.LocalPokemonArray);
       //cardcolor(pokemon.types, pokemon.id);
     } catch (error) {
       console.error('Error fetching Pokemon data', error);
     }
+  },
+  async retrieveAllPokemons() {
+    for (let i = 601; i <= 1100; i++) {
+      try {
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`);
+        const { id, name, sprites, abilities, moves, weight, height, types, base_experience } = response.data;
+        const pokemon = {
+          id,
+          name,
+          image: sprites.other.dream_world.front_default,
+          abilities: abilities.map(a => a.ability.name),
+          moves: moves.map(m => m.move.name),
+          weight,
+          height,
+          types: types.map(t => t.type.name),
+          base_experience
+        };
+        this.LocalPokemonArray.push(pokemon);
+        console.log(this.LocalPokemonArray);
+  
+        await axios.post('http://localhost:3000/pokemon', {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.image,
+          abilities: JSON.stringify(pokemon.abilities),
+          moves: JSON.stringify(pokemon.moves),
+          weight: pokemon.weight,
+          height: pokemon.height,
+          types: JSON.stringify(pokemon.types),
+          base_experience: pokemon.base_experience,
+        });
+      } catch (error) {
+        console.error(`Failed to fetch data for Pokemon ${i}:`, error);
+      }
+    }
   }
+  
   
   
   

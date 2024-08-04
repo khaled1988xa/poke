@@ -16,11 +16,12 @@
                     <h1>Height: {{ AuthStore.pokemonIndex.height / 10 }} M</h1>
                     <h1>Weight: {{ AuthStore.pokemonIndex.weight / 10 }} KG</h1>
                     <h1 style="text-transform: capitalize;">Type: 
-                      {{ AuthStore.pokemonIndex.types && AuthStore.pokemonIndex.types.length > 0 ? AuthStore.pokemonIndex.types[0].type.name : 'N/A' }}
+                      {{ AuthStore.pokemonIndex.types && AuthStore.pokemonIndex.types.length > 0 ? AuthStore.pokemonIndex.types[0] : 'N/A' }}
                     </h1>
                     <h1 style="text-transform: capitalize;">Abilities: 
-                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 0 ? AuthStore.pokemonIndex.abilities[0].ability.name : 'N/A' }}
-                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 1 ? ', ' + AuthStore.pokemonIndex.abilities[1].ability.name : '' }}
+                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 0 ? AuthStore.pokemonIndex.abilities[0] : 'N/A' }}
+                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 1 ? ', ' + AuthStore.pokemonIndex.abilities[1] : '' }}
+                      {{ AuthStore.pokemonIndex.abilities && AuthStore.pokemonIndex.abilities.length > 2 ? ', ' + AuthStore.pokemonIndex.abilities[2] : '' }}
                     </h1>
                     <h1>Base Experience: {{ AuthStore.pokemonIndex.base_experience }}</h1>
                   </v-card-text>
@@ -55,6 +56,7 @@
   
   const AuthStore = useAuthStore()
   console.log(AuthStore.LocalPokemonArray)
+  console.log('Pokemon Index:', AuthStore.pokemonIndex)
   console.log('Pokemon Image URL:', AuthStore.pokemonIndex.image)
   </script>
 

@@ -22,10 +22,11 @@
        
         <div  class="container" v-if="authStore.LocalPokemonArray.length > 0">
           <div  v-for=" poke,index in authStore.LocalPokemonArray" :key="poke.id">
-          <v-card  class="card" :style="{ backgroundColor: authStore.typeColor[poke.id] }"  >
+            <v-card  class="card" :style="{ backgroundColor: authStore.typeColor[poke.id] }">
             <v-card-title><h1 style="text-transform: capitalize;">{{ poke.name }}</h1></v-card-title>
             <v-card-text>
               <p>{{ poke.id }}</p>
+              
               <img class="img" :src="poke.image" alt="Pokemon Image">
               <button @click="openDetail(index,poke.id)">Details</button>
           </v-card-text>
@@ -33,7 +34,7 @@
         </div>
         </div>
         <div  v-for="localePokemon in allPokemonArray" :key="localePokemon.id">
-          <v-card class="card" :style="{ backgroundColor: typeColor[localePokemon.id] }">
+          <v-card class="card" :style="{ backgroundColor: authStore.typeColor[localePokemon.id] }">
             <v-card-title><h1 style="text-transform: capitalize;">{{ localePokemon.name }}</h1></v-card-title>
             <v-card-text>
               <p>{{ localePokemon.id }}</p>
@@ -59,6 +60,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import {computed} from 'vue'
 import axios from 'axios'
 import {useRouter,useRoute} from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -67,31 +69,10 @@ const authStore = useAuthStore()
 const router=useRouter()
 const route = useRoute()
 
+const cardColor = computed(() => authStore.typeColor);
 
 
-const pokemons = [
-    {
-        id: 1,
-        name: 'bulbasaur',
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-        abilities: [{ name: 'overgrow' }, { name: 'chlorophyll' }],
-        moves: [{ name: 'razor-wind' }, { name: 'swords-dance' }],
-        weight: 69,
-        height: 7,
-        types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
-        base_experience: 64
-    },
-    // Add more Pokémon data as needed
-];
 
-pokemons.forEach(async (pokemon) => {
-    try {
-        const response = await axios.post('http://localhost:3000/pokemon', pokemon);
-        console.log(`Added ${pokemon.name}: ${response.status}`);
-    } catch (error) {
-        console.error(`Failed to add ${pokemon.name}: `, error);
-    }
-});
 
 
 
@@ -129,35 +110,8 @@ function fetchPokemon(pokemonId,randomPokiimonId)  {
     authStore.fetchPokemon1(pokemonId)
   }
 
- async function retieveAllPokemons(){
-  for (let i = 1; i <= 300; i++) {
-    try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`);
-      console.log(response.data);
-       allpokemon.value = {
-      name: response.data.name,
-      id: response.data.id,
-      image: response.data.sprites.other.dream_world.front_default,
-      abilities: response.data.abilities.map(a => ({ name: a.ability.name })),
-      moves: response.data.moves.map(m => ({ name: m.move.name, url: m.move.url })),
-      weight: response.data.weight,
-      height: response.data.height,
-      types: response.data.types
-    }
-      allPokemonArray.value.push(allpokemon.value)
-      console.log(allPokemonArray.value)
-   
-  }
-  catch (error) {
-    console.error(`Failed to fetch data for Pokemon ${i}: ${error}`);
-  }
-}
 
-
-    
-
-}
- 
+ //authStore.retrieveAllPokemons()
   
 function openDetail(index,id){
   authStore.openDetailsView(index,id)
