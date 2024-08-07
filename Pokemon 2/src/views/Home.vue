@@ -54,8 +54,6 @@
         </div>
         </div>
     </main>
-     
-      
 </template>
 
 <script setup>

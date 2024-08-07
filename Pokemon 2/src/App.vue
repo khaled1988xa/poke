@@ -1,8 +1,8 @@
 <template>
-<main>
+<v-app>
     <RouterView/>
-    <button @click="fetchPokemon">Add</button>
-</main>
+   
+</v-app>
 </template>
 
 <script setup>
