@@ -51,22 +51,27 @@ export const useAuthStore = defineStore('auth',  {
     
         this.LocalPokemonArray.push(pokemon);
         this.cardcolor(pokemon.types, pokemon.id);
-    
-        await axios.post('http://localhost:3000/pokemon', 
+        const pokemonData = await axios.get(`http://localhost:3000/pokemon/${pokemonId}`);
+
+        if (pokemonData.data) 
           {
-          id: pokemon.id,
-          name: pokemon.name,
-          image: pokemon.image,
-          abilities: JSON.stringify(pokemon.abilities),
-          moves: JSON.stringify(pokemon.moves),
-          weight: pokemon.weight,
-          height: pokemon.height,
-          types: JSON.stringify(pokemon.types),
-          base_experience: pokemon.base_experience,
-        });
-    
-        console.log('Pokemon added successfully:', pokemon);
-        console.log(pokemon.types, pokemon.id);
+          console.log('Pokemon data retrieved successfully and it is in the Database:', pokemonData.data);}
+          else {
+          await axios.post('http://localhost:3000/pokemon', 
+            {
+            id: pokemon.id,
+            name: pokemon.name,
+            image: pokemon.image,
+            abilities: JSON.stringify(pokemon.abilities),
+            moves: JSON.stringify(pokemon.moves),
+            weight: pokemon.weight,
+            height: pokemon.height,
+            types: JSON.stringify(pokemon.types),
+            base_experience: pokemon.base_experience,
+          });
+          console.log('Pokemon added successfully:', pokemon);
+          console.log(pokemon.types, pokemon.id);
+        }
 
         
       } catch (error) {

@@ -1,40 +1,10 @@
 <template>
   <v-app>
     <v-container>
-      <v-btn @click="dialog = true" color="primary">Open Dialog</v-btn>
-      <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card>
-          <v-tabs v-model="tab" background-color="deep-purple accent-4" dark>
-            <v-tab>Login</v-tab>
-            <v-tab>Register</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab">
-            <v-tab-item>
+       <v-card>
+          <v-tab-item>
               <v-card flat>
-                <v-card-text>
-                  <v-form ref="loginForm" v-model="validLogin" lazy-validation>
-                    <v-text-field
-                      v-model="loginUsername"
-                      label="Username"
-                      :rules="[rules.required]"
-                      required
-                    ></v-text-field>
-                    <v-text-field
-                      v-model="loginPassword"
-                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                      :type="showPassword ? 'text' : 'password'"
-                      @click:append="togglePassword"
-                      label="Password"
-                      :rules="[rules.required, rules.min]"
-                      required
-                    ></v-text-field>
-                    <v-btn :disabled="!validLogin" @click="handleLogin" color="success">Login</v-btn>
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <v-card flat>
+                <v-card-title> Please register to continue </v-card-title>
                 <v-card-text>
                   <v-form ref="registerForm" v-model="validRegister" lazy-validation>
                     <v-text-field
@@ -62,13 +32,14 @@
                       required
                     ></v-text-field>
                     <v-btn :disabled="!validRegister" @click="handleRegister" color="success">Register</v-btn>
+                    <v-btn color="secondary" class="ml-2" @click="router.push({ path: '/login'})">Login</v-btn>
                   </v-form>
                 </v-card-text>
               </v-card>
             </v-tab-item>
-          </v-tabs-items>
+          
         </v-card>
-      </v-dialog>
+    
     </v-container>
   </v-app>
 </template>
@@ -83,11 +54,11 @@ const authStore = usePiniaAuthStore();
 
 const dialog = ref(false);
 const tab = ref(0);
-const validLogin = ref(false);
+
 const validRegister = ref(false);
 const showPassword = ref(false);
 
-const loginUsername = ref('');
+
 const loginPassword = ref('');
 const registerUsername = ref('');
 const registerPassword = ref('');
@@ -103,14 +74,6 @@ const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
-const handleLogin = async () => {
-  try {
-    await authStore.login({ username: loginUsername.value, password: loginPassword.value });
-    router.push('/home');
-  } catch (error) {
-    console.error('Login failed', error);
-  }
-};
 
 const handleRegister = async () => {
   try {

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const API_URL = 'http://localhost:3000/auth/';
 
@@ -19,6 +21,7 @@ class AuthService {
 
   logout() {
     localStorage.removeItem('user');
+    
   }
 
   register(user) {

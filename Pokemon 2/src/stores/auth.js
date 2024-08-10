@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia';
 import AuthService from '../services/auth';
+import { useRouter, useRoute } from 'vue-router';
+const router = useRouter();
 
 export const usePiniaAuthStore = defineStore('piniaAuthStore', {
   state: () => ({
     user: JSON.parse(localStorage.getItem('user')) || null,
     status: { loggedIn: !!localStorage.getItem('user') }
+
   }),
   actions: {
     async register(userData) {
@@ -35,6 +38,10 @@ export const usePiniaAuthStore = defineStore('piniaAuthStore', {
       AuthService.logout();
       this.user = null;
       this.status.loggedIn = false;
+      window.location.reload();
+      
+       // prevent vue-router warning when navigating to '/login');
+
     }
   }
 });
