@@ -57,7 +57,7 @@
   const AuthStore = useAuthStore()
   console.log(AuthStore.LocalPokemonArray)
   console.log('Pokemon Index:', AuthStore.pokemonIndex)
-  console.log('Pokemon Image URL:', AuthStore.pokemonIndex.image)
+  // console.log('Pokemon Image URL:', AuthStore.pokemonIndex.image)
   </script>
 
 <style scoped>

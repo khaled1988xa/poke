@@ -22,13 +22,14 @@
       </v-row>
       <v-container class="card-container">
         <v-row>
-          <v-col v-for="poke in authStore.LocalPokemonArray" :key="poke.id" cols="12" sm="4" md="3">
+          <v-col v-for="(poke,index) in authStore.LocalPokemonArray" :key="poke.id" cols="12" sm="4" md="3">
             <v-card :color="authStore.typeColor[poke.id]" class="ma-2">
               <v-card-title class="justify-center text-capitalize">{{ poke.name }}</v-card-title>
               <v-card-text>
                 <p>{{ poke.id }}</p>
                 <v-img :src="poke.image" alt="Pokemon Image" height="150" contain></v-img>
-                <v-btn @click="openDetail(index, poke.id)" class="Details-button">Details</v-btn>
+                <v-btn @click="openDetail(index,poke.id)" class="Details-button">Details</v-btn>
+                <v-btn @click="addPokemonToDB(index,poke.id)" class="Details-button">Add to DB</v-btn>
               </v-card-text>
             </v-card>
           </v-col>
@@ -73,6 +74,10 @@ const route = useRoute();
 
 const pokemonId = ref('');
 
+function addPokemonToDB(id) {
+  authStore.addPokemonToDB(id);
+}
+
 
 
 function increment() {
@@ -97,6 +102,7 @@ function fetchPokemon1(id) {
 }
 
 function openDetail(index, id) {
+  console.log(index)
   authStore.openDetailsView(index, id);
 }
 

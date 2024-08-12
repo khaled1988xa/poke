@@ -36,7 +36,6 @@ export const useAuthStore = defineStore('auth',  {
         const data = response.data;
         
         console.log(data);
-    
         const pokemon = {
           id: data.id,
           name: data.name,
@@ -50,8 +49,17 @@ export const useAuthStore = defineStore('auth',  {
         };
     
         this.LocalPokemonArray.push(pokemon);
+        
         this.cardcolor(pokemon.types, pokemon.id);
-        const pokemonData = await axios.get(`http://localhost:3000/pokemon/${pokemonId}`);
+        try {
+          const pokemonData = await axios.get(`http://localhost:3000/pokemon/${pokemonId}`);
+          console.log(pokemonData.data);
+        }
+        
+
+        catch (error) {
+          console.error('Error fetching Pokemon data', error);
+        }
 
         if (pokemonData.data) 
           {
@@ -106,13 +114,14 @@ export const useAuthStore = defineStore('auth',  {
     console.log(`Color set for ${id}: ${this.typeColor[id]}`);
   
   },
-   openDetailsView(index,id){
-    router.push({name:'Details',params:{id:id}})
+   async openDetailsView(index,id){
     console.log(index)
     if (this.LocalPokemonArray.length > 0){
        this.pokemonIndex =this.LocalPokemonArray[index]
       console.log(this.pokemonIndex)
       console.log(index) 
+      router.push({name:'Details',params:{id:id}})
+    console.log(index)
     }
   },
   async fetchPokemon1(pokemonId) {
@@ -163,7 +172,8 @@ export const useAuthStore = defineStore('auth',  {
       };
   
       this.LocalPokemonArray.push(pokemon);
-      this.cardcolor(JSON.parse(pokemon.types), pokemon.id); // Call cardcolor function with pokemon.types, pokemon.id);
+      this.cardcolor(pokemon.types, pokemon.id);
+      // this.cardcolor(JSON.parse(pokemon.types), pokemon.id); // Call cardcolor function with pokemon.types, pokemon.id);
       console.log(pokemon.types)
       console.log(JSON.parse(pokemon.types));
       console.log('Response data:', data);
@@ -206,6 +216,18 @@ export const useAuthStore = defineStore('auth',  {
       } catch (error) {
         console.error(`Failed to fetch data for Pokemon ${i}:`, error);
       }
+    }
+  },
+  async addPokemonToDB(index,id) {
+    try {
+      this.pokemonId = id;
+      const pokemon = this.LocalPokemonArray[index];
+      console.log('Adding Pokemon to database:', pokemon);
+      const response = await axios.post('http://localhost:3000/pokemon', pokemon);
+
+      console.log('Pokemon added to database:', response.data);
+    } catch (error) {
+      console.error('Failed to add Pokemon to database:', error);
     }
   }
   
